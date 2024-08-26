@@ -1,0 +1,71 @@
+﻿@using System.Globalization
+@using Repository.Entities
+@using Service.Services.Bookings
+﻿
+@model List<Booking>;
+
+@inject IBookingService bookingService;
+
+<h2>Controle de estacionamento</h2>
+
+<div class="row">
+    <div class="col">
+        <form asp-action="Search" method="get">
+            <div class="input-group">
+                <input type="text" name="licensePlate" value="@ViewBag.LicensePlate" class="form-control" placeholder="Digite a placa do carro..." aria-label="Input" />
+                <button type="submit" class="btn btn-primary">Pesquisar</button>
+            </div>
+        </form>
+    </div>
+</div>
+<br />
+
+<div class="row mb-2">
+    <div class="text-end">
+        <a asp-action="Create" class="btn btn-primary">Marcar entrada</a>
+    </div>
+</div>
+
+<table class="table table-striped table-bordered">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Placa</th>
+            <th>Horário de chegada</th>
+            <th>Horário de saída</th>
+            <th>Duração</th>
+            <th>Tempo cobrado (hora)</th>
+            <th>Preço cobrado inicial (hora)</th>
+            <th>Preço cobrado incremental (hora)</th>
+            <th>Valor a pagar</th>
+            <th>Marcar saída</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var booking in Model)
+        {
+
+            <tr>
+                <td>@booking.Id</td>
+                <td>@booking.LicensePlate</td>
+                <td>@booking.StartDate</td>
+                <td>@booking.EndDate</td>
+                <td>@bookingService.GetTime(booking)</td>
+                <td>@bookingService.GetChargedHours(booking)</td>
+                <td>@booking.InitialChargedValue.ToString("C2", CultureInfo.CreateSpecificCulture("pt-BR"))</td>
+                <td>@booking.IncrementedChargedValue.ToString("C2", CultureInfo.CreateSpecificCulture("pt-BR"))</td>
+                <td>@booking.Price.ToString("C2", CultureInfo.CreateSpecificCulture("pt-BR"))</td>
+                <td>
+                    @{
+                        if (@booking.EndDate == null)
+                        {
+                            <a asp-action="Finalize" asp-route-id="@booking.LicensePlate" class="btn btn-success">
+                                <i class="fa fa-check"></i>
+                            </a>
+                        }
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

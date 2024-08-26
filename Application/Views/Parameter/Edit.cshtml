@@ -1,0 +1,54 @@
+﻿@model Service.Models.Parameters.ParameterViewModel;
+
+<h2>Edição de Parâmetros</h2>
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["Error"]
+
+    </div>
+}
+
+<form asp-action="Edit" method="POST">
+
+    <input asp-for="Id" type="hidden" />
+
+    <div class="row">
+        <div class="form-group col-md-6">
+            <label asp-for="InitialValue" class="form-label"></label>
+            <input asp-for="InitialValue" class="form-control" />
+            <span asp-validation-for="InitialValue" class="text-danger"></span>
+        </div>
+        <div class="form-group col-md-6">
+            <label asp-for="IncrementalValue" class="form-label"></label>
+            <input asp-for="IncrementalValue" class="form-control" />
+            <span asp-validation-for="IncrementalValue" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="row">
+
+        <div class="form-group col-md-6">
+            <label asp-for="StartDate" class="form-label"></label>
+            <input asp-for="StartDate" class="form-control" />
+            <span asp-validation-for="StartDate" class="text-danger"></span>
+        </div>
+
+        <div class="form-group col-md-6">
+            <label asp-for="EndDate" class="form-label"></label>
+            <input asp-for="EndDate" class="form-control" />
+            <span asp-validation-for="EndDate" class="text-danger"></span>
+        </div>
+    </div>
+
+    <br />
+
+    <div>
+        <a class="btn btn-outline-danger float-start" asp-action="Index">Cancelar <i class="fa-solid fa-x"></i></a>
+        <div class="float-end">
+            <button type="submit" class="btn btn-danger" asp-controller="Parameter" asp-action="Delete">Excluir</button>
+            <button class="btn btn-primary" type="submit">Salvar <i class="fas fa-arrow-right"></i></button>
+        </div>
+    </div>
+</form>
