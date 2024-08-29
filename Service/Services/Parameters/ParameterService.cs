@@ -37,7 +37,7 @@ namespace Service.Services.Parameters
             parameterDataBase.StartDate = parameter.StartDate;
             parameterDataBase.EndDate = parameter.EndDate;
 
-            _parameterRepository.Update(parameter);
+            _parameterRepository.Update(parameterDataBase);
 
             return parameter;
         }

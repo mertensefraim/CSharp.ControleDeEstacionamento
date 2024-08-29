@@ -55,16 +55,27 @@ namespace Service.Services.Bookings
 
             var timeDifference = booking.EndDate.Value - booking.StartDate;
 
-            var halfHours = (int)timeDifference.TotalMinutes / 30;
-            var brokenHalfHours = timeDifference.TotalMinutes % 30;
+            var hours = (int)timeDifference.TotalMinutes / 60;
+            var brokenHours = timeDifference.TotalMinutes % 60;
 
-            var totalMinutes = 30;
+            int totalMinutes = 0;
 
-            for (var i = 0; i < halfHours - 1; i++)
-                totalMinutes += 30;
+            if (hours == 0 && brokenHours <= 30)
+                totalMinutes = 30;
 
-            if (brokenHalfHours > 10)
-                totalMinutes += 30;
+            else
+            {
+                if (hours != 0)
+                {
+                    for (var i = 0; i < hours; i++)
+                        totalMinutes += 60;
+
+                    if (brokenHours > 10)
+                        totalMinutes += 60;
+                }
+                else 
+                    totalMinutes = 60;
+            }
 
             return TimeSpan.FromMinutes(totalMinutes);
         }
@@ -83,15 +94,23 @@ namespace Service.Services.Bookings
 
             var timeDifference = booking.EndDate.Value - booking.StartDate;
 
-            var initialValue = GetInitialValueWithDateTime(booking.StartDate) / 2;
-            var incrementalValue = GetIncrementalValueWithDateTime(booking.StartDate) / 2;
+            var initialValue = GetInitialValueWithDateTime(booking.StartDate);
+            var incrementalValue = GetIncrementalValueWithDateTime(booking.StartDate);
 
-            var totalCharge = initialValue;
+            var hours = (int)timeDifference.TotalMinutes / 60;
+            var brokenHours = timeDifference.TotalMinutes % 60;
 
-            var halfHours = (int)timeDifference.TotalMinutes / 30;
-            var brokenHalfHours = timeDifference.TotalMinutes % 30;
+            double totalCharge = 0;
 
-            for (var i = 0; i < halfHours - 1; i++)
+            if (hours == 0)
+            {
+                if (brokenHours <= 30) 
+                    totalCharge = initialValue / 2;
+                else
+                    totalCharge = initialValue;
+            }
+
+            for (var i = 0; i < hours; i++)
             {
                 if (i == 0)
                     totalCharge += initialValue;
@@ -99,7 +118,7 @@ namespace Service.Services.Bookings
                     totalCharge += incrementalValue;
             }
 
-            if (brokenHalfHours > 10)
+            if (brokenHours > 10 && hours != 0)
                 totalCharge += incrementalValue;
 
             return totalCharge;
